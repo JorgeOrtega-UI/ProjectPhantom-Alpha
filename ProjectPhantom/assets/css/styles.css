@@ -4,6 +4,61 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* ====================================== */
+/* ======== :ROOT & THEME VARS ========== */
+/* ====================================== */
+:root {
+    /* Fondos */
+    --bg-main: #f5f5fa;
+    --bg-content: #ffffff;
+    --bg-hover: #f5f5fa;
+    --bg-active: #f5f5fa;
+    --bg-drag-handle: #f5f5fa;
+    --bg-module: #ffffff;
+
+    /* Texto */
+    --text-primary: #000000;
+    --text-secondary: #6c757d;
+    --text-hero-title: #33333b;
+    --text-hero-subtitle: #47474f;
+    --text-input: #000000;
+
+    /* Bordes */
+    --border-primary: #00000020;
+    --border-container: transparent; /* MODIFICACIÓN: Borde transparente para contenedores en light mode */
+    --border-loader-base: #333;
+    --border-loader-top: #000;
+
+    /* Sombras */
+    --shadow-main: 0 4px 12px #00000020;
+}
+
+.dark-theme {
+    /* Fondos */
+    --bg-main: #252627;
+    --bg-content: #18191b;
+    --bg-hover: #ffffff20;
+    --bg-active: #ffffff20;
+    --bg-drag-handle: #ffffff20;
+    --bg-module: #252627;
+
+    /* Texto */
+    --text-primary: #fff;
+    --text-hero-title: #fff;
+    --text-hero-subtitle: #ccc;
+    --text-input: #fff;
+
+    /* Bordes */
+    --border-primary: #ffffff20;
+    --border-container: #ffffff20; /* MODIFICACIÓN: Borde visible para contenedores en dark mode */
+    --border-loader-base: #ccc;
+    --border-loader-top: #fff;
+
+    /* Sombras */
+    --shadow-main: unset;
+}
+
+
+/* ====================================== */
 /* ===== GLOBAL RESET & BASE STYLES ===== */
 /* ====================================== */
 * {
@@ -21,17 +76,7 @@ body {
 }
 
 body {
-    background-color: #f5f5fa;
-}
-
-/* ====================================== */
-/* ============ TYPOGRAPHY ============== */
-/* ====================================== */
-.body-title {
-    font-size: 0.875rem;
-    font-weight: 500;
-    letter-spacing: 0.0178571429em;
-    color: #000000;
+    background-color: var(--bg-main);
 }
 
 /* ====================================== */
@@ -51,7 +96,7 @@ body {
 }
 
 .preview-active {
-    background-color: #f5f5fa;
+    background-color: var(--bg-active);
 }
 
 /* ====================================== */
@@ -69,7 +114,7 @@ body {
     width: 100%;
     height: 100%;
     padding: 12px;
-    background-color: #f5f5fa;
+    background-color: var(--bg-main);
 }
 
 .general-content {
@@ -77,16 +122,16 @@ body {
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
-    background-color: #ffffff;
-    border: 1px solid transparent;
+    background-color: var(--bg-content);
+    border: 1px solid var(--border-container); /* MODIFICACIÓN: Usar la nueva variable */
     border-radius: 12px;
-    box-shadow: 0 4px 12px #00000020;
+    box-shadow: var(--shadow-main);
 }
 
 .general-content-top {
     width: 100%;
     height: auto;
-    border-bottom: 1px solid #00000020;
+    border-bottom: 1px solid var(--border-primary);
     z-index: 999;
 }
 
@@ -150,14 +195,15 @@ body {
     height: 40px;
     background-color: transparent;
     border-radius: 8px;
-    border: 1px solid #00000020;
+    border: 1px solid var(--border-primary);
+    color: var(--text-primary);
     cursor: pointer;
     outline: none;
     user-select: none;
 }
 
 .header-button:hover {
-    background-color: #f5f5fa;
+    background-color: var(--bg-hover);
 }
 
 /* ---------- Module & Menu ---------- */
@@ -181,22 +227,21 @@ body {
 
 .module-options .menu-content {
     display: none;
-    /* Oculto por defecto */
     flex-direction: column;
     width: 320px;
     max-height: 450px;
-    color: #000000;
-    background-color: #ffffff;
-    border: 1px solid transparent;
+    color: var(--text-primary);
+    background-color: var(--bg-module);
+    border: 1px solid var(--border-container); /* MODIFICACIÓN: Usar la nueva variable */
     border-radius: 12px;
-    box-shadow: 0 4px 12px #00000020;
+    box-shadow: var(--shadow-main);
     will-change: transform, opacity;
 }
 
 .menu-content-header {
     flex-shrink: 0;
     padding: 8px;
-    border-bottom: 1px solid #00000020;
+    border-bottom: 1px solid var(--border-primary);
 }
 
 .menu-content-list {
@@ -231,18 +276,18 @@ body {
     align-items: center;
     width: 100%;
     height: 40px;
-    color: #000000;
+    color: var(--text-primary);
     position: relative;
     border-radius: 8px;
     cursor: pointer;
 }
 
 .menu-link:hover {
-    background-color: #f5f5fa;
+    background-color: var(--bg-hover);
 }
 
 .menu-link.active {
-    background-color: #f5f5fa;
+    background-color: var(--bg-active);
 }
 
 .menu-link-icon {
@@ -254,11 +299,9 @@ body {
     height: 100%;
 }
 
-/* Corrección para Elipsis */
 .menu-link-text {
     flex: 1 1 auto;
     min-width: 0;
-    /* Permite que el contenedor se encoja */
     overflow: hidden;
     text-align: start;
     white-space: nowrap;
@@ -271,33 +314,23 @@ body {
 
 .menu-link-value {
     margin-left: 4px;
-    /* Pequeño espacio entre la etiqueta y el valor */
-    color: #6c757d;
-    /* Un color ligeramente diferente para el valor */
+    color: var(--text-secondary);
     font-weight: 400;
 }
 
 /* ---------- Loader Spinner ---------- */
 .loader {
-    border: 2px solid #333;
-    /* gris oscuro como fondo del círculo */
-    border-top: 2px solid #000;
-    /* negro para el efecto de "giro" */
+    border: 2px solid var(--border-loader-base);
+    border-top: 2px solid var(--border-loader-top);
     border-radius: 50%;
     width: 18px;
     height: 18px;
     animation: spin 1s linear infinite;
 }
 
-
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* ---------- Section Content ---------- */
@@ -312,7 +345,7 @@ body {
     font-weight: 600;
     font-size: 42px;
     line-height: 52px;
-    color: #33333b;
+    color: var(--text-hero-title);
     text-align: center;
     margin: 0 auto 4px auto;
     max-width: 1100px;
@@ -322,19 +355,19 @@ body {
     line-height: 32px;
     font-size: 22px;
     font-weight: 400;
-    color: #47474f;
+    color: var(--text-hero-subtitle);
     max-width: 980px;
     margin: auto;
 }
 
-/* ---------- Estilos para Búsqueda ---------- */
+/* ---------- Search ---------- */
 .search-content {
     display: flex;
     flex-direction: row;
     width: 100%;
     height: 40px;
     border-radius: 8px;
-    border: 1px solid #00000020;
+    border: 1px solid var(--border-primary);
     flex-shrink: 0;
 }
 
@@ -363,9 +396,10 @@ body {
     background-color: transparent;
     font-size: 0.875rem;
     font-family: "Roboto Condensed", sans-serif;
-    color: #000000;
+    color: var(--text-input);
 }
 
+/* ---------- Drag Handle / Pill ---------- */
 .pill-container {
     display: none;
     justify-content: center;
@@ -378,33 +412,51 @@ body {
     display: flex;
     width: 52px;
     height: 4px;
-    background-color: #f5f5fa;
+    background-color: var(--bg-drag-handle);
     border-radius: 50px;
     cursor: pointer;
 }
 
 
-/* --- DEFINICIÓN DE ANIMACIONES --- */
+/* ====================================== */
+/* ============ ANIMATIONS ============== */
+/* ====================================== */
 @keyframes slideIn {
-    from {
-        transform: translateY(100%);
-    }
-
-    to {
-        transform: translateY(0);
-    }
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
 }
 
 @keyframes slideOut {
-    from {
-        transform: translateY(0);
-    }
+    from { transform: translateY(0); }
+    to { transform: translateY(100%); }
+}
 
-    to {
-        transform: translateY(100%);
+/* ====================================== */
+/* ============ MEDIA QUERIES =========== */
+/* ====================================== */
+@media (max-width: 991.98px) {
+    .section-subtitle h2 {
+        font-size: 20px;
+        line-height: 28px;
     }
 }
 
+@media (max-width: 90em) {
+    .section-subtitle h2 {
+        margin-bottom: 12px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .section-title h1 {
+        font-size: 24px;
+        line-height: 34px;
+    }
+    .section-subtitle h2 {
+        font-size: 16px;
+        line-height: 20px;
+    }
+}
 
 @media (max-width: 468px) {
     .pill-container {
@@ -433,7 +485,6 @@ body {
         transition: transform 0.3s ease-out;
     }
 
-    /* --- CLASES DE ANIMACIÓN --- */
     .menu-slide-in {
         animation: slideIn 0.3s ease-out;
     }
@@ -441,90 +492,4 @@ body {
     .menu-slide-out {
         animation: slideOut 0.3s ease-out;
     }
-}
-
-
-/* ====================================== */
-/* ============ MEDIA QUERIES =========== */
-/* ====================================== */
-@media (max-width: 991.98px) {
-    .section-subtitle h2 {
-        font-size: 20px;
-        line-height: 28px;
-    }
-}
-
-@media (max-width: 90em) {
-    .section-subtitle h2 {
-        margin-bottom: 12px;
-    }
-}
-
-@media (max-width: 767.98px) {
-    .section-title h1 {
-        font-size: 24px;
-        line-height: 34px;
-    }
-
-    .section-subtitle h2 {
-        font-size: 16px;
-        line-height: 20px;
-    }
-}
-
-
-
-
-.dark-theme .main-content {
-    background-color: #252627;
-}
-
-.dark-theme .general-content {
-    box-shadow: unset;
-    background-color: #18191b;
-    border-color: #ffffff20;
-}
-
-.dark-theme .general-content-top {
-    border-color: #ffffff20;
-}
-
-.dark-theme .header-button {
-    border-color: #ffffff20;
-    color: #fff;
-}
-
-.dark-theme .header-button:hover {
-    background-color: #ffffff20;
-}
-
-.dark-theme .module-options .menu-content {
-    background-color: #252627;
-    box-shadow: unset;
-    border-color: #ffffff20;
-}
-
-.dark-theme .menu-link {
-    color: #fff;
-}
-
-.dark-theme .menu-link:hover {
-    background-color: #ffffff20;
-}
-
-.dark-theme .menu-link.active {
-    background-color: #ffffff20;
-}
-
-.dark-theme .preview-active {
-    background-color: #ffffff20;
-}
-
-.dark-theme .loader {
-    border-color: #ccc;
-    border-top: 2px solid #fff;
-}
-
-.dark-theme .drag-handle {
-    background-color: #ffffff20;
 }
