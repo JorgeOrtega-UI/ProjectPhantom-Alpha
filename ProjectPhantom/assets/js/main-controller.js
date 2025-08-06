@@ -5,6 +5,7 @@ export function initMainController() {
     let countriesLoaded = false;
     let isChanging = false; // Flag para prevenir múltiples cambios simultáneos
     let selectionTimeoutId = null; // ID del timeout para poder cancelarlo
+    let isAnimating = false; // Flag para prevenir clics durante la animación
 
     // --- ELEMENTOS DEL DOM ---
     const toggleButton = document.querySelector('[data-action="toggleModuleOptions"]');
@@ -187,15 +188,13 @@ export function initMainController() {
 
         if (moduleOptions.classList.contains('disabled')) return;
 
-        moduleOptions.querySelectorAll('.menu-content').forEach(menu => {
-            menu.removeAttribute('style');
-        });
-
         moduleOptions.classList.add('disabled');
         moduleOptions.classList.remove('active');
-        moduleOptions.querySelectorAll('[data-menu]').forEach(menu => {
-            menu.classList.remove('active');
+        
+        moduleOptions.querySelectorAll('.menu-content').forEach(menu => {
+            menu.classList.remove('active', 'menu-slide-in', 'menu-slide-out');
             menu.classList.add('disabled');
+            menu.removeAttribute('style');
         });
     };
     
@@ -203,20 +202,20 @@ export function initMainController() {
         moduleOptions.classList.remove('disabled');
         moduleOptions.classList.add('active');
         const mainMenu = moduleOptions.querySelector('[data-menu="main"]');
+        
         if (mainMenu) {
             mainMenu.classList.remove('disabled');
             mainMenu.classList.add('active');
 
-            // Lógica de animación de apertura para móvil
             if (window.innerWidth <= 468) {
-                // 1. Añadimos la clase que posiciona el menú abajo, fuera de la pantalla.
-                mainMenu.classList.add('menu-initial-state');
+                isAnimating = true;
+                mainMenu.classList.remove('menu-slide-out');
+                mainMenu.classList.add('menu-slide-in');
                 
-                // 2. Usamos un pequeño timeout para asegurar que el navegador aplique el estado inicial
-                //    antes de quitarlo, lo que forzará la transición CSS.
-                setTimeout(() => {
-                    mainMenu.classList.remove('menu-initial-state');
-                }, 10);
+                mainMenu.addEventListener('animationend', () => {
+                    mainMenu.classList.remove('menu-slide-in');
+                    isAnimating = false;
+                }, { once: true });
             }
         }
         if (!countriesLoaded) {
@@ -231,30 +230,34 @@ export function initMainController() {
         }
 
         const activeMenu = moduleOptions.querySelector('.menu-content.active');
-        
         if (!activeMenu) {
             closeModule();
             return;
         }
         
-        const onAnimationEnd = () => {
-            activeMenu.removeEventListener('transitionend', onAnimationEnd);
+        isAnimating = true;
+        activeMenu.classList.remove('menu-slide-in');
+        activeMenu.classList.add('menu-slide-out');
+
+        activeMenu.addEventListener('animationend', () => {
+            isAnimating = false;
             closeModule();
-        };
-        
-        activeMenu.addEventListener('transitionend', onAnimationEnd, { once: true });
-        
-        activeMenu.style.transition = 'transform 0.3s ease-out';
-        activeMenu.style.transform = 'translateY(100%)';
+        }, { once: true });
     };
 
     // --- MANEJADORES DE EVENTOS PRINCIPALES ---
     toggleButton.addEventListener('click', (event) => {
+        if (isAnimating) return;
         event.stopPropagation();
-        moduleOptions.classList.contains('disabled') ? openModule() : closeModule();
+        moduleOptions.classList.contains('disabled') ? openModule() : closeModuleWithAnimation();
     });
 
     moduleOptions.addEventListener('click', (event) => {
+        if (isAnimating) {
+            // Permitir que el evento se detenga, pero no hacer nada más
+            event.stopPropagation();
+            return;
+        }
         event.stopPropagation();
 
         if (event.target === moduleOptions && window.innerWidth <= 468) {
@@ -306,21 +309,22 @@ export function initMainController() {
     }
 
     document.addEventListener('click', () => {
-        if (allowCloseOnOutsideClick) closeModule();
+        if (isAnimating) return;
+        if (allowCloseOnOutsideClick && !moduleOptions.classList.contains('disabled')) {
+             closeModuleWithAnimation();
+        }
     });
 
     document.addEventListener('keydown', (event) => {
-        if (allowCloseOnEscKey && event.key === 'Escape') {
-            if (window.innerWidth <= 468 && !moduleOptions.classList.contains('disabled')) {
-                closeModuleWithAnimation();
-            } else {
-                closeModule();
-            }
+        if (isAnimating) return;
+        if (allowCloseOnEscKey && event.key === 'Escape' && !moduleOptions.classList.contains('disabled')) {
+            closeModuleWithAnimation();
         }
     });
 
     // --- INICIALIZACIÓN AL CARGAR LA PÁGINA ---
     renderTheme();
     syncLanguageMenu();
+
     document.addEventListener('closeModuleRequest', closeModule);
 }

@@ -379,6 +379,19 @@ body {
     cursor: pointer;
 }
 
+
+/* --- DEFINICIÓN DE ANIMACIONES --- */
+@keyframes slideIn {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+@keyframes slideOut {
+    from { transform: translateY(0); }
+    to { transform: translateY(100%); }
+}
+
+
 @media (max-width: 468px) {
     .pill-container {
         display: flex;
@@ -403,15 +416,20 @@ body {
         border-bottom-right-radius: 0;
         max-height: 70vh;
         width: 100%;
-        /* --- MODIFICACIÓN PARA ANIMACIÓN --- */
-        transition: transform 0.3s ease-out;
+        /* Transición para el snap-back del arrastre */
+        transition: transform 0.3s ease-out; 
+    }
+    
+    /* --- CLASES DE ANIMACIÓN --- */
+    .menu-slide-in {
+        animation: slideIn 0.3s ease-out;
     }
 
-    /* --- NUEVA CLASE PARA ANIMACIÓN DE APERTURA --- */
-    .module-options .menu-content.menu-initial-state {
-        transform: translateY(100%);
+    .menu-slide-out {
+        animation: slideOut 0.3s ease-out;
     }
 }
+
 
 /* ====================================== */
 /* ============ MEDIA QUERIES =========== */

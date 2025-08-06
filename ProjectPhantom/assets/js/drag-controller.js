@@ -5,11 +5,12 @@ export function initDragController() {
         return;
     }
 
-    const dragHandle = moduleOptions.querySelector('.drag-handle');
-    let menuContent; // Se asignará dinámicamente al menú activo
+    // Seleccionamos TODOS los drag handles
+    const dragHandles = moduleOptions.querySelectorAll('.drag-handle');
+    let menuContent; // El menú activo que se está arrastrando
 
-    if (!dragHandle) {
-        console.error("El manejador de arrastre (drag handle) no fue encontrado.");
+    if (!dragHandles.length) {
+        console.error("No se encontraron manejadores de arrastre (drag handles).");
         return;
     }
 
@@ -19,11 +20,14 @@ export function initDragController() {
     const startDrag = (e) => {
         if (window.innerWidth > 468 || moduleOptions.classList.contains('disabled')) return;
         
+        // Obtenemos el menú activo en el momento del arrastre
         menuContent = moduleOptions.querySelector('.menu-content.active');
         if (!menuContent) return;
 
         isDragging = true;
         startY = e.pageY || e.touches[0].pageY;
+        // La animación se controla manualmente, quitamos la transición de CSS
+        menuContent.style.transition = 'none';
         
         e.preventDefault(); 
 
@@ -40,10 +44,11 @@ export function initDragController() {
         const currentY = e.pageY || e.touches[0].pageY;
         let deltaY = currentY - startY;
         
+        // Solo permitir arrastrar hacia abajo
         deltaY = Math.max(0, deltaY); 
 
+        // Aplicamos el estilo en línea para mover el menú
         menuContent.style.transform = `translateY(${deltaY}px)`;
-        menuContent.style.transition = 'none';
     };
 
     const endDrag = (e) => {
@@ -55,32 +60,26 @@ export function initDragController() {
         const menuHeight = menuContent.offsetHeight;
         const dragPercentage = (deltaY / menuHeight) * 100;
         
+        // Restauramos la transición de CSS para la animación final
         menuContent.style.transition = 'transform 0.3s ease-out';
         
         if (dragPercentage > 40) {
-            // El menú debe cerrarse.
-            
-            // 1. Definimos una función que se ejecutará CUANDO la animación TERMINE.
-            const onSlideOutEnd = () => {
-                // 3. Ahora que la animación terminó, le pedimos al main-controller que oculte todo.
-                document.dispatchEvent(new CustomEvent('closeModuleRequest'));
-                
-                // 4. Limpiamos nuestros propios rastros.
-                menuContent.removeEventListener('transitionend', onSlideOutEnd);
-            };
-            
-            // 2. Añadimos el listener y comenzamos la animación de salida.
-            menuContent.addEventListener('transitionend', onSlideOutEnd, { once: true });
+            // El menú debe cerrarse. Lo animamos hacia abajo.
             menuContent.style.transform = 'translateY(100%)';
+            
+            // Cuando la transición termine, le pedimos al main-controller que limpie todo.
+            menuContent.addEventListener('transitionend', () => {
+                document.dispatchEvent(new CustomEvent('closeModuleRequest'));
+            }, { once: true });
 
         } else {
-            // El menú debe volver a su sitio.
-            const onSnapBackEnd = () => {
-                menuContent.removeAttribute('style'); // Limpiamos el estilo al terminar.
-                menuContent.removeEventListener('transitionend', onSnapBackEnd);
-            };
-            menuContent.addEventListener('transitionend', onSnapBackEnd, { once: true });
+            // El menú debe volver a su sitio (snap-back).
             menuContent.style.transform = 'translateY(0px)';
+
+            // Cuando vuelva a su sitio, limpiamos los estilos en línea para no interferir después.
+            menuContent.addEventListener('transitionend', () => {
+                menuContent.removeAttribute('style');
+            }, { once: true });
         }
 
         document.removeEventListener('mousemove', drag);
@@ -88,7 +87,10 @@ export function initDragController() {
         document.removeEventListener('mouseup', endDrag);
         document.removeEventListener('touchend', endDrag);
     };
-
-    dragHandle.addEventListener('mousedown', startDrag);
-    dragHandle.addEventListener('touchstart', startDrag, { passive: false });
+    
+    // Aplicamos la lógica a TODOS los drag handles
+    dragHandles.forEach(handle => {
+        handle.addEventListener('mousedown', startDrag);
+        handle.addEventListener('touchstart', startDrag, { passive: false });
+    });
 }
