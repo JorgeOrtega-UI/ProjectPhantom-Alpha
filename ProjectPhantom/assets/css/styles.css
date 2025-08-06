@@ -78,6 +78,7 @@ body {
     flex: 1 1 auto;
     flex-direction: column;
     background-color: #ffffff;
+    border: 1px solid transparent;
     border-radius: 12px;
     box-shadow: 0 4px 12px #00000020;
 }
@@ -481,6 +482,7 @@ body {
 .dark-theme .general-content {
     box-shadow: unset;
     background-color: #18191b;
+    border-color: #ffffff20;
 }
 
 .dark-theme .general-content-top {
@@ -498,6 +500,8 @@ body {
 
 .dark-theme .module-options .menu-content {
     background-color: #252627;
+    box-shadow: unset;
+    border-color: #ffffff20;
 }
 
 .dark-theme .menu-link {
