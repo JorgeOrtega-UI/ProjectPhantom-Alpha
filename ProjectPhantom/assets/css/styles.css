@@ -241,7 +241,7 @@ body {
 }
 
 .menu-link.active {
-    background-color: #e8e8f0;
+    background-color: #f5f5fa;
 }
 
 .menu-link-icon {
@@ -278,13 +278,16 @@ body {
 
 /* ---------- Loader Spinner ---------- */
 .loader {
-    border: 2px solid #f0f0f0;
-    border-top: 2px solid #6200ea;
+    border: 2px solid #333;
+    /* gris oscuro como fondo del círculo */
+    border-top: 2px solid #000;
+    /* negro para el efecto de "giro" */
     border-radius: 50%;
     width: 18px;
     height: 18px;
     animation: spin 1s linear infinite;
 }
+
 
 @keyframes spin {
     0% {
@@ -304,7 +307,7 @@ body {
     text-align: center;
 }
 
-.section-hero h1 {
+.section-title h1 {
     font-weight: 600;
     font-size: 42px;
     line-height: 52px;
@@ -314,7 +317,7 @@ body {
     max-width: 1100px;
 }
 
-.section-hero h2 {
+.section-subtitle h2 {
     line-height: 32px;
     font-size: 22px;
     font-weight: 400;
@@ -382,13 +385,23 @@ body {
 
 /* --- DEFINICIÓN DE ANIMACIONES --- */
 @keyframes slideIn {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
 }
 
 @keyframes slideOut {
-    from { transform: translateY(0); }
-    to { transform: translateY(100%); }
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(100%);
+    }
 }
 
 
@@ -416,10 +429,9 @@ body {
         border-bottom-right-radius: 0;
         max-height: 70vh;
         width: 100%;
-        /* Transición para el snap-back del arrastre */
-        transition: transform 0.3s ease-out; 
+        transition: transform 0.3s ease-out;
     }
-    
+
     /* --- CLASES DE ANIMACIÓN --- */
     .menu-slide-in {
         animation: slideIn 0.3s ease-out;
@@ -435,25 +447,25 @@ body {
 /* ============ MEDIA QUERIES =========== */
 /* ====================================== */
 @media (max-width: 991.98px) {
-    .section-hero h2 {
+    .section-subtitle h2 {
         font-size: 20px;
         line-height: 28px;
     }
 }
 
 @media (max-width: 90em) {
-    .section-hero h2 {
+    .section-subtitle h2 {
         margin-bottom: 12px;
     }
 }
 
 @media (max-width: 767.98px) {
-    .section-hero h1 {
+    .section-title h1 {
         font-size: 24px;
         line-height: 34px;
     }
 
-    .section-hero h2 {
+    .section-subtitle h2 {
         font-size: 16px;
         line-height: 20px;
     }
